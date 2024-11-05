@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Datos Aleatorios de Wikipedia</title>
+</head>
+
+<body>
+
+    <h1>Datos Aleatorios de Wikipedia</h1>
+    <p><button onclick="obtenerWiki()">Obtener Datos Aleatorios de Wikipedia</button></p>
+    <div id="wiki">
+        <h2 id="nombre"></h2>
+        <p id="descripcion"></p>
+    </div>
+
+    <script type="module">
+        import { exportaAHtml } from "./lib/js/exportaAHtml.js";
+        import { muestraError } from "./lib/js/muestraError.js";
+
+        async function obtenerWiki() {
+            // Primera llamada para obtener un artículo aleatorio
+            const url = `https://es.wikipedia.org/w/api.php?action=query&format=json&origin=*&list=random&rnnamespace=0&rnlimit=1`;
+
+            try {
+                const respuesta = await fetch(url);
+
+                // Verificar si la respuesta es correcta
+                if (!respuesta.ok) throw new Error("Error al obtener los datos de Wikipedia");
+
+                // Convertir la respuesta a JSON
+                const datos = await respuesta.json();
+                const tituloWiki = datos.query.random[0].title;
+
+                // Segunda llamada para obtener el extracto (descripción) del artículo de Wikipedia
+                const urlExtracto = `https://es.wikipedia.org/w/api.php?action=query&format=json&origin=*&prop=extracts&exintro&explaintext&titles=${encodeURIComponent(tituloWiki)}`;
+
+                const respuestaExtracto = await fetch(urlExtracto);
+                if (!respuestaExtracto.ok) throw new Error("Error al obtener la descripción del artículo de Wikipedia");
+
+                const datosExtracto = await respuestaExtracto.json();
+                const paginaId = Object.keys(datosExtracto.query.pages)[0];
+                const descripcionWiki = datosExtracto.query.pages[paginaId].extract;
+
+                // Mostrar el nombre y la descripción en el HTML
+                document.getElementById("nombre").textContent = tituloWiki;
+                document.getElementById("descripcion").textContent = descripcionWiki || "Descripción no disponible.";
+            } catch (error) {
+                muestraError(error, document.getElementById("wiki"));
+            }
+        }
+
+        exportaAHtml(obtenerWiki);
+    </script>
+
+</body>
+
+</html>

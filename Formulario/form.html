@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width">
+ <title>Muestra datos</title>
+</head>
+
+<body onload="descargaDatos()">
+
+ <h1>Muestra datos</h1>
+
+ <!-- Al mostrar un dato, se usan los atributos "id", "name" o "data-name"
+  para buscar la propiedad a desplegar en la página. -->
+
+ <p>
+  <label>
+   Nombre Articulo
+   <!-- Muestra la propiedad nombre del objeto (articulo). -->
+   <output name="nombre articulo"></output>
+  </label>
+ </p>
+
+ <p>
+  <label>
+   Descripcion
+   <!-- Muestra la propiedad descripcion, descripcion del producto mencionado. -->
+    <output name="descripcion"></output>
+  </label>
+ </p>
+
+ <p>
+  <label>
+    Popularidad
+    <!-- Muestra la propiedad popularidad, barra de popularidad del celular mencionado.-->
+    <meter id="popularidad" min="5" max="100"></meter>
+  </label>
+ </p>
+
+ <p>
+  <label>
+   Con que Celular Cuentas en este Momento?
+   <!-- Muestra la propiedad celular, preguntandote con que celular cuentas. -->
+    <input data-name="celular" type="text">
+  </label>
+ </p>
+
+ <p>
+  <label>
+   Cuantos Años Llevas con tu Celular?
+   <!-- Muestra la propiedad edad_cel del objeto descargado, usando la propiedad
+    valueAsNumber del input. -->
+   <input data-name="edad_cel" type="number">
+  </label>
+ </p>
+
+ <p>
+  <label>
+    Cuanto almacenamiento tiene tu Celular (gb)?
+   <!-- Muestra la propiedad almacenamiento, cuanto almacenamiento tiene su celular -->
+   <select name="almacenamiento">
+    <option value="16">16</option>
+    <option value="32">32</option>
+    <option value="64">64</option>
+    <option value="128">128</option>
+    <option value="256+">256+</option>
+   </select>
+  </label>
+ </p>
+
+ 
+ <p>
+  <label>
+   Comprarias el Samsung Galaxy S24?
+   <!-- Muestra la propiedad seleccion1, una seleccion si te gustaria comprar el producto o no. -->
+   <select name="seleccion1">
+    <option value="">Sin selección</option>
+    <option value="si">Si</option>
+    <option value="no">No</option>
+   </select>
+  </label>
+ </p>
+
+ <p>
+  <label>
+    Por que lo comprarias? o Por que no lo comprarias?
+    <!-- Muestra la propiedad comprar, un campo a ingresar de por que te gustaria comprar el celular
+    o porque no-->
+    <input data-name="comprar" type="text">
+  </label>
+ </p>
+
+</body>
+
+<script type="module">
+
+ import { exportaAHtml } from "./lib/js/exportaAHtml.js"
+ import { consumeJson } from "./lib/js/consumeJson.js"
+ import { muestraObjeto } from "./lib/js/muestraObjeto.js"
+ import { muestraError } from "./lib/js/muestraError.js"
+
+ async function descargaDatos() {
+  try {
+   const respuesta = await consumeJson("srv/datos.php")
+   muestraObjeto(document, respuesta.body)
+  } catch (error) {
+   muestraError(error)
+  }
+ }
+ exportaAHtml(descargaDatos)
+
+</script>
+
+</html>
